@@ -1,20 +1,37 @@
-# workspace
-Have you ever wanted to just start pasting and typing stuff but didn't want to go throught the hassle of:
-1. Creating a folder
-2. Creating a file
-3. Opening it in your faviorite code editor
+Workspace Manager - Easy project workspace management
 
-Then after all that start doin what you do best?
+Usage: workspace.sh [COMMAND] [OPTIONS]
 
-Well that is what workspace is all about.
+Commands:
+  create [NAME]        Create new workspace
+  open [NAME]          Open existing workspace
+  list                List all workspaces
+  delete [NAME]        Delete workspace
+  rename [OLD] [NEW]   Rename workspace
+  clone [FROM] [TO]    Clone workspace
 
-Presently you will need to make it an alias in ~/.bash_aliases but bin support is comming soon.
+Template Commands:
+  template create [NAME]     Create template from current directory
+  template list             List available templates
+  template use [TEMPLATE] [WORKSPACE]  Create workspace from template
+  template delete [NAME]    Delete template
 
-## Flags Supported
-```
--h, help	Display this help message
--c, clear	Clear workspace
--l, list	List workspace folders
--t, tree	Tree workspace folders and files
--n, new     Create new folder in workspace. Not giving any of argument will create a random generated directory and a file. 
-```
+Utility Commands:
+  tree [NAME]          Show workspace structure
+  info [NAME]          Show workspace information
+  recent               Show recently accessed workspaces
+  search [TERM]        Search workspaces by name/content
+  backup [NAME]        Backup workspace to archive
+  restore [ARCHIVE]    Restore workspace from archive
+
+Options:
+  -h, --help           Show this help message
+  -v, --verbose        Verbose output
+  --editor [EDITOR]    Specify editor (code, vim, nano, etc.)
+  --no-open            Don't open editor after creation
+
+Examples:
+  workspace.sh create my-project
+  workspace.sh open my-project
+  workspace.sh template use python-basic my-new-app
+  workspace.sh delete old-project
