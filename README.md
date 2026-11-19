@@ -1,51 +1,78 @@
-# Workspace Manager - Easy project workspace management
+# ws: workspace manager
+
+One folder per project, opened in your editor with a single command. `ws` creates, finds, opens and tidies project workspaces under `~/Documents/workspaces`, with an fzf picker sorted by most recently used.
+
+## Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zenoweed/workspace/main/install.sh | sh
+```
+
+This puts the script at `~/.local/bin/ws` (set `WS_BIN` to choose another folder). Or install by hand:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zenoweed/workspace/main/workspace.sh -o ~/.local/bin/ws
+chmod +x ~/.local/bin/ws
+```
+
+**Needs:** Linux with bash and GNU coreutils. Optional: [fzf](https://github.com/junegunn/fzf) for the interactive picker (without it you type the name), `tree` for `ws tree`, and VS Code as the default editor (change it in the config).
 
 ## Usage
+
 ```bash
-workspace.sh [COMMAND] [OPTIONS]
+ws                      # list workspaces, most recently used first
+ws create my-project    # create and open a workspace
+ws open                 # pick one with fzf and open it
+ws search terraform eks # rank workspaces by keyword hits
 ```
 
-## Commands
+### Commands
 
-### Basic Commands
-- `create [NAME]` - Create new workspace
-- `open [NAME]` - Open existing workspace
-- `list` - List all workspaces
-- `delete [NAME]` - Delete workspace
-- `rename [OLD] [NEW]` - Rename workspace
-- `clone [FROM] [TO]` - Clone workspace
+| Command | What it does |
+| --- | --- |
+| `create [NAME]` | Create a workspace (with `src/`, `docs/`, `tests/` and a README) and open it |
+| `open [NAME]` | Open a workspace in your editor; with no name, pick one with fzf |
+| `list`, `ls` | List workspaces, most recently used first, with "2h ago"-style times |
+| `delete`, `rm [NAME]` | Delete a workspace (asks to confirm) |
+| `rename`, `mv [OLD] [NEW]` | Rename a workspace |
+| `clone`, `cp [FROM] [TO]` | Copy a workspace |
+| `tree [NAME]` | Show a workspace's folder structure |
+| `info [NAME]` | Show path, size, and file and folder counts |
+| `recent` | Show the last 10 workspaces opened |
+| `search KEYWORDS...` | Search workspace names and file contents. Ranks by how many of the keywords matched, then total hits, and shows a per-keyword breakdown. Skips `.git`, `node_modules`, virtualenvs, build output and similar. |
+| `help` | Show help |
 
-### Template Commands
-- `template create [NAME]` - Create template from current directory
-- `template list` - List available templates
-- `template use [TEMPLATE] [WORKSPACE]` - Create workspace from template
-- `template delete [NAME]` - Delete template
+Any command that takes a name lets you pick from a list when you leave the name out.
 
-### Utility Commands
-- `tree [NAME]` - Show workspace structure
-- `info [NAME]` - Show workspace information
-- `recent` - Show recently accessed workspaces
-- `search [TERM]` - Search workspaces by name/content
-- `backup [NAME]` - Backup workspace to archive
-- `restore [ARCHIVE]` - Restore workspace from archive
+### Templates
 
-## Options
-- `-h, --help` - Show this help message
-- `-v, --verbose` - Verbose output
-- `--editor [EDITOR]` - Specify editor (code, vim, nano, etc.)
-- `--no-open` - Don't open editor after creation
+| Command | What it does |
+| --- | --- |
+| `template create [NAME]` | Save the current directory as a template |
+| `template list` | List templates |
+| `template use TEMPLATE WORKSPACE` | Create a workspace from a template |
+| `template delete NAME` | Delete a template |
 
-## Examples
+### Options
+
+Put options before the command, e.g. `ws --no-open create scratch`.
+
+| Option | What it does |
+| --- | --- |
+| `--editor CMD` | Use a different editor for this run |
+| `--no-open` | Don't open the workspace after `create` |
+| `--no-close` | Keep the terminal open after opening a workspace |
+
+## Configuration
+
+`~/.workspace_config` is created on first run and read as shell variables:
+
 ```bash
-# Create a new workspace
-workspace.sh create my-project
-
-# Open an existing workspace
-workspace.sh open my-project
-
-# Create workspace from template
-workspace.sh template use python-basic my-new-app
-
-# Delete a workspace
-workspace.sh delete old-project
+editor=code             # command used to open a workspace
+auto_open=true          # open new workspaces right after create
+close_terminal=false    # close the terminal after opening a workspace in the editor
+# base_path=$HOME/Documents/workspaces             # where workspaces live
+# templates_path=$HOME/Documents/workspace-templates
 ```
+
+`close_terminal=true` is handy when you launch `ws open` from a terminal you only opened to pick a project: once the editor opens, the terminal closes itself.
